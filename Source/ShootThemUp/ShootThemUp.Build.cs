@@ -1,5 +1,6 @@
 // Shoot Them Up Game. All rights reserved.
 
+using System.Security.Cryptography.X509Certificates;
 using UnrealBuildTool;
 
 public class ShootThemUp : ModuleRules
@@ -11,6 +12,8 @@ public class ShootThemUp : ModuleRules
 		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore" });
 
 		PrivateDependencyModuleNames.AddRange(new string[] {  });
+
+		PublicIncludePaths.AddRange(new string[] { "ShootThemUp/Public/Player" });
 
 		// Uncomment if you are using Slate UI
 		// PrivateDependencyModuleNames.AddRange(new string[] { "Slate", "SlateCore" });
