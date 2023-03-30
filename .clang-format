@@ -6,7 +6,8 @@ BreakBeforeBraces: Allman
 ColumnLimit: '140'
 AccessModifierOffset: '-4'
 SortIncludes: false
-AllowShortBlocksOnASingleLine: false
+AllowShortBlocksOnASingleLine: Always
 AlignAfterOpenBracket: DontAlign
-AllowShortFunctionsOnASingleLine: Inline
+AllowShortFunctionsOnASingleLine: All
+AllowShortIfStatementsOnASingleLine: AllIfsAndElse
 PointerAlignment: Left
