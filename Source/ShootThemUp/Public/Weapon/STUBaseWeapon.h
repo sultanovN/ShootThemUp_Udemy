@@ -15,7 +15,8 @@ class SHOOTTHEMUP_API ASTUBaseWeapon : public AActor
 	
 public:	
 	ASTUBaseWeapon();
-	virtual void Fire();
+	virtual void StartFire();
+	virtual void StopFire();
 
 protected:
 	virtual void BeginPlay() override;
@@ -32,6 +33,12 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	float DamageEvent = 10.0f;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	float TimeBetweenShots = 0.1f;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	float BulletSpread = 1.5f;
+
 	void MakeShot();
 
 	APlayerController* GetPlayerController() const;
@@ -46,6 +53,7 @@ protected:
 
 	void MakeDamage(const FHitResult& HitResult);
 
-public:	
+private:
+	FTimerHandle ShotTimerHandle;
 
 };
