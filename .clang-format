@@ -8,6 +8,6 @@ AccessModifierOffset: '-4'
 SortIncludes: false
 AllowShortBlocksOnASingleLine: Always
 AlignAfterOpenBracket: DontAlign
-AllowShortFunctionsOnASingleLine: All
+AllowShortFunctionsOnASingleLine: Inline
 AllowShortIfStatementsOnASingleLine: AllIfsAndElse
 PointerAlignment: Left
