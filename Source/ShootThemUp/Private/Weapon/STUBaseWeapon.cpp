@@ -23,6 +23,7 @@ void ASTUBaseWeapon::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	CurrentAmmo = DefaultAmmo;
 }
 
 void ASTUBaseWeapon::StartFire() 
@@ -78,4 +79,38 @@ void ASTUBaseWeapon::MakeDamage(const FHitResult& HitResult)
 	const auto DamagedActor = HitResult.GetActor();
 	if (!DamagedActor) return;
 	DamagedActor->TakeDamage(10.0f, FDamageEvent(), GetPlayerController(), this);
+}
+
+bool ASTUBaseWeapon::IsClipEmpty() const 
+{
+	return CurrentAmmo.Bullets == 0;
+}
+bool ASTUBaseWeapon::IsAmmoEmpty() const 
+{
+	return !CurrentAmmo.Infinite && IsClipEmpty() && CurrentAmmo.Clips == 0;
+}
+void ASTUBaseWeapon::DecreaseAmmo() 
+{
+	CurrentAmmo.Bullets--;
+	LogAmmo();
+	if (IsClipEmpty() && !IsAmmoEmpty()) 
+	{ 
+		ChangeClip();
+	}
+}
+void ASTUBaseWeapon::ChangeClip() 
+{
+	CurrentAmmo.Bullets = DefaultAmmo.Bullets;
+	if (!CurrentAmmo.Infinite) 
+	{ 
+		CurrentAmmo.Clips--;
+	}
+	UE_LOG(LogBaseWeapon, Display, TEXT("-----Changed Clip-----"));
+}
+
+void ASTUBaseWeapon::LogAmmo() 
+{
+	FString AmmoInfo = "Ammo: " + FString::FromInt(CurrentAmmo.Bullets) + " / ";
+	AmmoInfo += CurrentAmmo.Infinite ? "Infinite" : FString::FromInt(CurrentAmmo.Clips);
+	UE_LOG(LogBaseWeapon, Display, TEXT("%s"), *AmmoInfo);
 }
