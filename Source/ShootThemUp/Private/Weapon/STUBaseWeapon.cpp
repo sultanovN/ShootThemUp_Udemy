@@ -23,6 +23,9 @@ void ASTUBaseWeapon::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	check(WeaponMesh);
+	checkf(DefaultAmmo.Bullets > 0, TEXT("Bullets count could not be less/equal zero"));
+	checkf(DefaultAmmo.Clips > 0, TEXT("Clips count could not be less/equal zero"));
 	CurrentAmmo = DefaultAmmo;
 }
 
@@ -91,20 +94,31 @@ bool ASTUBaseWeapon::IsAmmoEmpty() const
 }
 void ASTUBaseWeapon::DecreaseAmmo() 
 {
+	if (CurrentAmmo.Bullets == 0)
+	{
+		UE_LOG(LogBaseWeapon, Warning, TEXT("Bullets number is zero"));
+		return;
+	}
 	CurrentAmmo.Bullets--;
 	LogAmmo();
 	if (IsClipEmpty() && !IsAmmoEmpty()) 
 	{ 
-		ChangeClip();
+		StopFire();
+		OnClipEmpty.Broadcast();
 	}
 }
 void ASTUBaseWeapon::ChangeClip() 
 {
-	CurrentAmmo.Bullets = DefaultAmmo.Bullets;
 	if (!CurrentAmmo.Infinite) 
 	{ 
+		if (CurrentAmmo.Clips == 0) 
+		{ 
+			UE_LOG(LogBaseWeapon, Warning, TEXT("Clips number is zero"));
+			return;
+		}
 		CurrentAmmo.Clips--;
 	}
+	CurrentAmmo.Bullets = DefaultAmmo.Bullets;
 	UE_LOG(LogBaseWeapon, Display, TEXT("-----Changed Clip-----"));
 }
 
@@ -113,4 +127,9 @@ void ASTUBaseWeapon::LogAmmo()
 	FString AmmoInfo = "Ammo: " + FString::FromInt(CurrentAmmo.Bullets) + " / ";
 	AmmoInfo += CurrentAmmo.Infinite ? "Infinite" : FString::FromInt(CurrentAmmo.Clips);
 	UE_LOG(LogBaseWeapon, Display, TEXT("%s"), *AmmoInfo);
+}
+
+bool ASTUBaseWeapon::CanReload() 
+{
+	return CurrentAmmo.Bullets < DefaultAmmo.Bullets && CurrentAmmo.Clips > 0;
 }

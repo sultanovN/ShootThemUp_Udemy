@@ -6,6 +6,7 @@
 #include "GameFramework/Character.h"
 #include "Animation/STUEquipFinishedAnimNotify.h"
 #include "Animation/STUReloadFinishedAnimNotify.h"
+#include "Animation/AnimUtils.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogWeaponComponent, All, All);
 
@@ -21,6 +22,8 @@ void USTUWeaponComponent::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	checkf(WeaponData.Num() == 2, TEXT("Our character can hold 2 weapons"));
+
 	CurrentWeaponIndex = 0;
 	InitAnimations();
 	SpawnWeapons();
@@ -49,7 +52,7 @@ void USTUWeaponComponent::SpawnWeapons()
 	{
 		auto Weapon = GetWorld()->SpawnActor<ASTUBaseWeapon>(OneWeaponData.WeaponClass);
 		if (!Weapon) continue;
-
+		Weapon->OnClipEmpty.AddUObject(this, &USTUWeaponComponent::OnEmptyClip);
 		Weapon->SetOwner(Character);
 		Weapons.Add(Weapon);
 		AttachWeaponToSocket(Weapon, Character->GetMesh(), WeaponArmorySocketName);
@@ -114,16 +117,25 @@ void USTUWeaponComponent::PlayAnimMontage(UAnimMontage* Animation)
 
 void USTUWeaponComponent::InitAnimations() 
 {
-	auto EquipFinishedNotify = FindNotifyByClass<USTUEquipFinishedAnimNotify>(EquipAnimMontage);
+	auto EquipFinishedNotify = AnimUtils::FindNotifyByClass<USTUEquipFinishedAnimNotify>(EquipAnimMontage);
 	if (EquipFinishedNotify)
 	{
 		EquipFinishedNotify->OnNotified.AddUObject(this, &USTUWeaponComponent::OnEquipFinished);
 	}
+	else 
+	{ 
+		UE_LOG(LogWeaponComponent, Warning, TEXT("Equip Animation notify is forgotten to set"));
+		checkNoEntry();
+	}
 
 	for (auto OneWeaponData : WeaponData) 
 	{
-		auto ReloadFinishedNotify = FindNotifyByClass<USTUReloadFinishedAnimNotify>(OneWeaponData.ReloadAnimMontage);
-		if (!ReloadFinishedNotify) continue;
+		auto ReloadFinishedNotify = AnimUtils::FindNotifyByClass<USTUReloadFinishedAnimNotify>(OneWeaponData.ReloadAnimMontage);
+		if (!ReloadFinishedNotify)
+		{
+			UE_LOG(LogWeaponComponent, Warning, TEXT("Reload Animation notify is forgotten to set"));
+			checkNoEntry();
+		}
 		ReloadFinishedNotify->OnNotified.AddUObject(this, &USTUWeaponComponent::OnReloadFinished);
 	}
 }
@@ -154,12 +166,24 @@ bool USTUWeaponComponent::CanEquip() const
 
 bool USTUWeaponComponent::CanReload() const
 {
-	return CurrentWeapon && !EquipAnimProgress && !ReloadAnimProgress;
+	return CurrentWeapon && !EquipAnimProgress && !ReloadAnimProgress && CurrentWeapon->CanReload();
 }
 
 void USTUWeaponComponent::Reload() 
 {
+	ChangeClip();
+}
+
+void USTUWeaponComponent::OnEmptyClip() 
+{
+	ChangeClip();
+}
+
+void USTUWeaponComponent::ChangeClip() 
+{
 	if (!CanReload()) return;
+	CurrentWeapon->StopFire();
+	CurrentWeapon->ChangeClip();
 	ReloadAnimProgress = true;
 	PlayAnimMontage(CurrentReloadAnimMontage);
 }
