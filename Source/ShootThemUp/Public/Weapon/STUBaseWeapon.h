@@ -21,6 +21,8 @@ public:
 	void ChangeClip();
 	bool CanReload();
 
+	FWeaponUIData GetUIData() const { return UIData; };
+
 	FOnClipEmptySignature OnClipEmpty;
 
 protected:
@@ -37,6 +39,9 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Weapon")
 	FAmmoData DefaultAmmo{15, 10, false};
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Weapon")
+	FWeaponUIData UIData;
 
 	virtual void MakeShot();
 	virtual bool GetTraceData(FVector& TraceStart, FVector& TraceEnd) const;
