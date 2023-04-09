@@ -22,6 +22,7 @@ public:
 	bool CanReload();
 
 	FWeaponUIData GetUIData() const { return UIData; };
+	FAmmoData GetAmmoData() const { return CurrentAmmo; }
 
 	FOnClipEmptySignature OnClipEmpty;
 
