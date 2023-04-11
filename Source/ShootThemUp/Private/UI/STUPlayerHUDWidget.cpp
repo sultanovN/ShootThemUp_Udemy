@@ -4,39 +4,37 @@
 #include "UI/STUPlayerHUDWidget.h"
 #include "Components/STUHealthComponent.h"
 #include "Components/STUWeaponComponent.h"
+#include "STUUtils.h"
 
 float USTUPlayerHUDWidget::GetHealthPercent() const
 {
-	auto const Player = GetOwningPlayerPawn();
-	if (!Player) return 0.0f;
-
-	auto Component = Player->GetComponentByClass(USTUHealthComponent::StaticClass());
-	auto HealthComponent = Cast<USTUHealthComponent>(Component);
+	const auto HealthComponent = STUUtils::GetSTUPlayerComponent<USTUHealthComponent>(GetOwningPlayerPawn());
 	if (!HealthComponent) return 0.0f;
 	return HealthComponent->GetHealthPercent();
 }
 
 bool USTUPlayerHUDWidget::GetCurrentWeaponUIData(FWeaponUIData& UIData) const
 {
-	auto const WeaponComponent = GetWeaponComponent();
+	const auto WeaponComponent = STUUtils::GetSTUPlayerComponent<USTUWeaponComponent>(GetOwningPlayerPawn());
 	if (!WeaponComponent) return false;
 	return WeaponComponent->GetCurrentWeaponUIData(UIData);
 }
 
 bool USTUPlayerHUDWidget::GetCurrentWeaponAmmoData(FAmmoData& AmmoData) const 
 {
-	auto const WeaponComponent = GetWeaponComponent();
+	const auto WeaponComponent = STUUtils::GetSTUPlayerComponent<USTUWeaponComponent>(GetOwningPlayerPawn());
 	if (!WeaponComponent) return false;
 	return WeaponComponent->GetCurrentWeaponAmmoData(AmmoData);
 }
 
-USTUWeaponComponent* USTUPlayerHUDWidget::GetWeaponComponent() const
+bool USTUPlayerHUDWidget::IsPlayerAlive() const 
 {
-	auto const Player = GetOwningPlayerPawn();
-	if (!Player) return nullptr;
+	const auto HealthComponent = STUUtils::GetSTUPlayerComponent<USTUHealthComponent>(GetOwningPlayerPawn());
+	return HealthComponent && !HealthComponent->IsDead();
+}
 
-	auto Component = Player->GetComponentByClass(USTUWeaponComponent::StaticClass());
-	auto WeaponComponent = Cast<USTUWeaponComponent>(Component);
-	if (!WeaponComponent) return nullptr;
-	return WeaponComponent;
+bool USTUPlayerHUDWidget::IsPlayerSpectating() const 
+{
+	const auto Controller = GetOwningPlayer();
+	return Controller && Controller->GetStateName() == NAME_Spectating;
 }
