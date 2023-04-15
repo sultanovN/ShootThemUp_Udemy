@@ -26,6 +26,8 @@ public:
 
 	FOnClipEmptySignature OnClipEmpty;
 
+	bool TryToAddAmmo(int32 ClipsAmount);
+
 protected:
 	virtual void BeginPlay() override;
 	
@@ -58,6 +60,8 @@ protected:
 	bool IsClipEmpty() const;
 	bool IsAmmoEmpty() const;
 	void DecreaseAmmo();
+	bool IsAmmoFull() const;
+
 private:
 	FAmmoData CurrentAmmo;
 };
