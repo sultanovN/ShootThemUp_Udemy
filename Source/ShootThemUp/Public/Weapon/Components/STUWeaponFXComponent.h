@@ -4,8 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "STUCoreTypes.h"
 #include "STUWeaponFXComponent.generated.h"
-
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class SHOOTTHEMUP_API USTUWeaponFXComponent : public UActorComponent
@@ -15,4 +15,12 @@ class SHOOTTHEMUP_API USTUWeaponFXComponent : public UActorComponent
 public:	
 	USTUWeaponFXComponent();
 
+	void PlayImpactFX(const FHitResult& Hit);
+
+protected:
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "VFX")
+	FImpactData DefaultImpactData;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "VFX")
+	TMap<UPhysicalMaterial*, FImpactData> ImpactDataMap;
 };
