@@ -54,10 +54,9 @@ void ASTUProjectile::OnProjectileHit(
 		nullptr,									//
 		DoFullDamage);
 
-	DrawDebugSphere(GetWorld(), GetActorLocation(), DamageRadius, 24, FColor::Red, false, LifeTime);
 	WeaponFXComponent->PlayImpactFX(Hit);
-
-	Destroy();
+	CollisionComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	SetLifeSpan(3.0f);
 }
 
 AController* ASTUProjectile::GetController()const 
