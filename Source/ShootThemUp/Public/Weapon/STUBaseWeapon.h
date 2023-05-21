@@ -22,6 +22,7 @@ public:
 	virtual void StopFire();
 	void ChangeClip();
 	bool CanReload();
+	bool IsAmmoEmpty() const;
 
 	FWeaponUIData GetUIData() const { return UIData; };
 	FAmmoData GetAmmoData() const { return CurrentAmmo; }
@@ -41,6 +42,9 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Weapon")
 	float TraceMaxDistance = 15000.0f;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Weapon")
+	float DamageAmount = 10.0f;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Weapon")
 	FAmmoData DefaultAmmo{15, 10, false};
@@ -63,7 +67,6 @@ protected:
 	void MakeDamage(const FHitResult& HitResult);
 
 	bool IsClipEmpty() const;
-	bool IsAmmoEmpty() const;
 	void DecreaseAmmo();
 	bool IsAmmoFull() const;
 

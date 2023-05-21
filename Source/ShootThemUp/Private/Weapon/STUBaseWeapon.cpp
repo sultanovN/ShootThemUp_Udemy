@@ -96,7 +96,7 @@ void ASTUBaseWeapon::MakeDamage(const FHitResult& HitResult)
 {
 	const auto DamagedActor = HitResult.GetActor();
 	if (!DamagedActor) return;
-	DamagedActor->TakeDamage(10.0f, FDamageEvent(), GetPlayerController(), this);
+	DamagedActor->TakeDamage(DamageAmount, FDamageEvent(), GetPlayerController(), this);
 }
 
 bool ASTUBaseWeapon::IsClipEmpty() const 
