@@ -5,7 +5,6 @@
 #include "BehaviorTree/BlackboardComponent.h"
 #include "AIController.h"
 #include "Components/STUWeaponComponent.h"
-#include "Components/STUhealthComponent.h"
 
 USTUFireService::USTUFireService() 
 {
@@ -21,8 +20,7 @@ void USTUFireService::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMem
 	if (Controller)
 	{
 		const auto WeaponComponent = Controller->GetPawn()->FindComponentByClass<USTUWeaponComponent>();
-		const auto HealthComponent = Controller->GetPawn()->FindComponentByClass<USTUHealthComponent>();
-		if (WeaponComponent && !HealthComponent->IsDead()) 
+		if (WeaponComponent) 
 		{ 
 			HasAim ? WeaponComponent->StartFire() : WeaponComponent->StopFire(); 
 		}
