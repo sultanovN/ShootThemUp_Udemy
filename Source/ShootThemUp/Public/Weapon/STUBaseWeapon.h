@@ -30,6 +30,7 @@ public:
 	FOnClipEmptySignature OnClipEmpty;
 
 	bool TryToAddAmmo(int32 ClipsAmount);
+	bool IsAmmoFull() const;
 
 protected:
 	virtual void BeginPlay() override;
@@ -68,7 +69,6 @@ protected:
 
 	bool IsClipEmpty() const;
 	void DecreaseAmmo();
-	bool IsAmmoFull() const;
 
 	UNiagaraComponent* SpawnMuzzleFX();
 
