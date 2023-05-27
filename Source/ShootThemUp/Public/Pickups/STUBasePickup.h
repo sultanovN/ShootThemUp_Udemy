@@ -33,8 +33,10 @@ protected:
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+	bool CouldBeTaken() const;
 
 private:
+	FTimerHandle RespawnTimerHandle;
 	float RotationYaw = 0.0f;
 	virtual bool GivePickupTo(APawn* PlayerPawn);
 	void PickupWasTaken();
