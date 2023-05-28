@@ -34,6 +34,8 @@ public:
 
 protected:
 	virtual void BeginPlay() override;
+
+	AController* GetController() const;
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
 	USkeletalMeshComponent* WeaponMesh;
@@ -58,8 +60,6 @@ protected:
 
 	virtual void MakeShot();
 	virtual bool GetTraceData(FVector& TraceStart, FVector& TraceEnd) const;
-
-	APlayerController* GetPlayerController() const;
 
 	FVector GetMuzzleWorldLocation() const;
 

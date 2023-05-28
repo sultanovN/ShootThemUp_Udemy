@@ -51,7 +51,7 @@ void ASTUProjectile::OnProjectileHit(
 		UDamageType::StaticClass(),					//
 		{GetOwner()},								//
 		this,										//
-		nullptr,									//
+		GetController(),							//
 		DoFullDamage);
 
 	WeaponFXComponent->PlayImpactFX(Hit);
@@ -59,8 +59,8 @@ void ASTUProjectile::OnProjectileHit(
 	SetLifeSpan(3.0f);
 }
 
-AController* ASTUProjectile::GetController()const 
-{ 
+AController* ASTUProjectile::GetController() const
+{
 	const auto Pawn = Cast<APawn>(GetOwner());
 	return Pawn ? Pawn->GetController() : nullptr;
 }
