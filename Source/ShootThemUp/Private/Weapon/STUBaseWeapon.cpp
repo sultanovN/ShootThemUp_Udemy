@@ -4,7 +4,6 @@
 #include "Weapon/STUBaseWeapon.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "Engine/World.h"
-#include "DrawDebugHelpers.h"
 #include "GameFramework/Character.h"
 #include "GameFrameWork/Controller.h"
 #include "NiagaraFunctionLibrary.h"

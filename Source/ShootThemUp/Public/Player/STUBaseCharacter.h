@@ -42,6 +42,8 @@ protected:
 
 	virtual void OnDeath();
 
+	virtual void FellOutOfWorld(const class UDamageType& dmgType) override;
+
 public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;

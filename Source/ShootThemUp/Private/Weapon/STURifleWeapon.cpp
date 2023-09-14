@@ -3,7 +3,6 @@
 
 #include "Weapon/STURifleWeapon.h"
 #include "Engine/World.h"
-#include "DrawDebugHelpers.h"
 #include "Components/STUWeaponFXComponent.h"
 #include "NiagaraComponent.h"
 #include "NiagaraFunctionLibrary.h"

@@ -3,7 +3,6 @@
 #include "Weapon/STUProjectile.h"
 #include "Components/SphereComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
-#include "DrawDebugHelpers.h"
 #include "Kismet/GameplayStatics.h"
 #include "Components/STUWeaponFXComponent.h"
 
@@ -17,6 +16,8 @@ ASTUProjectile::ASTUProjectile()
 	CollisionComponent->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Block);
 	CollisionComponent->bReturnMaterialOnMove = true;
 	SetRootComponent(CollisionComponent);
+
+
 
 	MovementComponent = CreateDefaultSubobject<UProjectileMovementComponent>("MovementComponent");
 	MovementComponent->InitialSpeed = 2000.0f;
@@ -56,7 +57,6 @@ void ASTUProjectile::OnProjectileHit(
 
 	WeaponFXComponent->PlayImpactFX(Hit);
 	CollisionComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-	SetLifeSpan(3.0f);
 }
 
 AController* ASTUProjectile::GetController() const

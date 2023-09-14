@@ -4,13 +4,33 @@
 #include "UI/STUGameHUD.h"
 #include "Engine/Canvas.h"
 #include "Blueprint/UserWidget.h"
+#include "STUGameModeBase.h"
+
+DEFINE_LOG_CATEGORY_STATIC(LogSTUGameHUD, All, All);
 
 void ASTUGameHUD::BeginPlay() 
 {
-	auto const PlayerHUDWidget = CreateWidget<UUserWidget>(GetWorld(), PlayerHUDWidgetClass);
-	if (PlayerHUDWidget) 
+	Super::BeginPlay();
+
+	GameWidgets.Add(ESTUMatchState::InProgress, CreateWidget<UUserWidget>(GetWorld(), PlayerHUDWidgetClass));
+	GameWidgets.Add(ESTUMatchState::Pause, CreateWidget<UUserWidget>(GetWorld(), PauseWidgetClass));
+	GameWidgets.Add(ESTUMatchState::GameOver, CreateWidget<UUserWidget>(GetWorld(), GameOverWidgetClass));
+
+	for (auto GameWidgetPair : GameWidgets)
+	{
+		const auto GameWidget = GameWidgetPair.Value;
+		if (!GameWidget) continue;
+		GameWidget->AddToViewport();
+		GameWidget->SetVisibility(ESlateVisibility::Hidden);
+	}
+
+	if (GetWorld()) 
 	{ 
-		PlayerHUDWidget->AddToViewport();
+		const auto GameMode = Cast<ASTUGameModeBase>(GetWorld()->GetAuthGameMode());
+		if (GameMode) 
+		{ 
+			GameMode->OnMatchStateChanged.AddUObject(this, &ASTUGameHUD::OnMatchStateChanged);
+		}
 	}
 }
 
@@ -30,4 +50,24 @@ void ASTUGameHUD::DrawCrossHair()
 	const FLinearColor Color = FLinearColor::Green;
 	DrawLine(Center.Min - HalfLineSize, Center.Max, Center.Min + HalfLineSize, Center.Max, Color, Thickness);
 	DrawLine(Center.Min, Center.Max - HalfLineSize, Center.Min, Center.Max + HalfLineSize, Color, Thickness);
+}
+
+void ASTUGameHUD::OnMatchStateChanged(ESTUMatchState State) 
+{
+	if (CurrentWidget) 
+	{ 
+		CurrentWidget->SetVisibility(ESlateVisibility::Hidden);
+	}
+
+	if (GameWidgets.Contains(State)) 
+	{ 
+		CurrentWidget = GameWidgets[State];
+	}
+
+	if (CurrentWidget)
+	{ 
+		CurrentWidget->SetVisibility(ESlateVisibility::Visible); 
+	}
+
+	UE_LOG(LogSTUGameHUD, Display, TEXT("Match State Changed: %s"), *UEnum::GetValueAsString(State));
 }

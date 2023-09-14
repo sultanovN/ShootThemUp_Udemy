@@ -8,6 +8,8 @@
 #include "Gameframework/Controller.h"
 #include "Components/STUWeaponComponent.h"
 #include "Components/CapsuleComponent.h"
+#include "STUGameModeBase.h"
+
 
 DEFINE_LOG_CATEGORY_STATIC(BaseCharacterLog, All, All);
 
@@ -89,6 +91,16 @@ void ASTUBaseCharacter::OnDeath()
 
 	GetMesh()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 	GetMesh()->SetSimulatePhysics(true);
+}
+
+void ASTUBaseCharacter::FellOutOfWorld(const UDamageType& dmgType) 
+{
+	if (HasAuthority() || GetLocalRole() == ROLE_None)
+	{ 
+		if (!GetWorld()) return;
+		const auto GameMode = Cast<ASTUGameModeBase>(GetWorld()->GetAuthGameMode());
+		GameMode->RespawnRequest(Controller);
+	}
 }
 
 void ASTUBaseCharacter::OnHealthChanged(float Health, float HealthDelta)
